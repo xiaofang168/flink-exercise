@@ -31,8 +31,19 @@ object RunJava {
       .filter(e => e.equals("cc"))
       .forEach(println(_))
 
-    val eventLog: EventLog = JSON.parseObject("", EventLog.getClass)
-    println(eventLog)
+
+    val eventLogSet: util.HashSet[String] = new util.HashSet[String]
+    eventLogSet.add("{\"status\":1,\"tel\":\"13545776181\",\"uid\":111}")
+
+    // classOf not getClass
+    val r: java.util.Set[EventLog] = eventLogSet
+      .stream()
+      .map[EventLog](e => JSON.parseObject(e, classOf[EventLog]))
+      .collect(Collectors.toSet[EventLog]())
+    println(r)
+
+    val eventLog = JSON.parseObject("{\"status\":1,\"tel\":\"13545776181\",\"uid\":111}")
+    println(eventLog.getInteger("status"))
   }
 
 }
