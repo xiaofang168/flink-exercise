@@ -11,8 +11,6 @@ import redis.JedisClient._
 object DataClient {
 
   def main(args: Array[String]): Unit = {
-
-
     jedis(jedis => {
       val eventLog = EventLog(121, "13740776181", 0)
       val conf = new SerializeConfig(true)
