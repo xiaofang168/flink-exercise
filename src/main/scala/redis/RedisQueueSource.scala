@@ -7,13 +7,14 @@ import mate.EventLog
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import redis.JedisClient.jedis
 
+import scala.collection.JavaConverters._
 
 /**
  * redis 队列源
  */
-class RedisQueueSource extends SourceFunction[java.util.Set[EventLog]] {
+class RedisQueueSource extends SourceFunction[Set[EventLog]] {
 
-  override def run(sourceContext: SourceFunction.SourceContext[java.util.Set[EventLog]]): Unit = {
+  override def run(sourceContext: SourceFunction.SourceContext[Set[EventLog]]): Unit = {
     // 读取队列消息
     val data: java.util.Set[String] = jedis(jedis => {
       jedis.zrange("log", 0, 10)
@@ -23,7 +24,7 @@ class RedisQueueSource extends SourceFunction[java.util.Set[EventLog]] {
       .map[EventLog](e => JSON.parseObject(e, EventLog.getClass))
       .collect(Collectors.toSet[EventLog])
 
-    sourceContext.collect(eventLogSet)
+    sourceContext.collect(eventLogSet.asScala.toSet)
   }
 
   override def cancel(): Unit = ???
