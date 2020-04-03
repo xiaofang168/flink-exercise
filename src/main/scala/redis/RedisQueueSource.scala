@@ -14,20 +14,40 @@ import scala.collection.JavaConverters._
  */
 class RedisQueueSource extends SourceFunction[Set[EventLog]] {
 
+  private var isRunning = true
+
+  private val SLEEP_MILLION = 5000
+
+  private val REDIS_KEY = "log"
+
+  private val LIMIT = 10
+
   override def run(sourceContext: SourceFunction.SourceContext[Set[EventLog]]): Unit = {
-    // 读取队列消息
-    val data: java.util.Set[String] = jedis(jedis => {
-      jedis.zrange("log", 0, 10)
-    })
+    // 循环读取
+    while (isRunning) {
+      // 读取队列消息
+      val data: java.util.Set[String] = jedis(jedis => {
+        jedis.zrevrange(REDIS_KEY, 0, LIMIT)
+      })
 
-    val eventLogSet: java.util.Set[EventLog] = data.stream()
-      .map[EventLog](e => JSON.parseObject(e, EventLog.getClass))
-      .collect(Collectors.toSet[EventLog])
+      // 数据为空休眠一段时间
+      if (data == null || data.isEmpty) {
+        Thread.sleep(SLEEP_MILLION)
+      }
 
-    sourceContext.collect(eventLogSet.asScala.toSet)
+      // 数据反序列化
+      val eventLogSet: java.util.Set[EventLog] = data.stream()
+        .map[EventLog](JSON.parseObject(_, classOf[EventLog]))
+        .collect(Collectors.toSet[EventLog])
+
+      // 收集数据
+      sourceContext.collect(eventLogSet.asScala.toSet)
+    }
   }
 
-  override def cancel(): Unit = ???
+  override def cancel(): Unit = {
+    isRunning = false
+  }
 
 
 }
