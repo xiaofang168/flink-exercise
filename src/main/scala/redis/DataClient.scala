@@ -16,6 +16,10 @@ object DataClient {
       val conf = new SerializeConfig(true)
       jedis.zadd("log", System.currentTimeMillis(), JSON.toJSONString(eventLog, conf))
     })
+    val r = jedis(jedis => {
+      jedis.zrevrange("log", 0, -1)
+    })
+    println(r)
   }
 
 }
