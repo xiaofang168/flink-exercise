@@ -1,6 +1,7 @@
 package redis
 
 import redis.clients.jedis.{Jedis, JedisPool, JedisPoolConfig}
+import util.Helper._
 
 object JedisClient {
 
@@ -19,14 +20,6 @@ object JedisClient {
     jconfig.setMaxWaitMillis(1000)
     jconfig.setTestWhileIdle(false)
     jconfig
-  }
-
-  private def autoClose[A <: AutoCloseable, B](closeable: A)(fun: (A) => B): B = {
-    try {
-      fun(closeable)
-    } finally {
-      closeable.close()
-    }
   }
 
 }
