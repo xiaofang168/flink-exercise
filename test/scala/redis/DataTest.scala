@@ -25,7 +25,7 @@ class DataTest {
         val values = rocksDB.multiGetAsList(keys)
 
         for (i <- 0 to keys.size() - 1) {
-          // s插值操作
+          // s插值操作, s实际上是一个方法，除了s还有f，raw（不会对字符串进行转义）
           println(s"multiGet ${new String(keys.get(i))}: ${if (values.get(i) != null) new String(values.get(i)) else null}")
         }
 
