@@ -23,27 +23,26 @@ class DataTest {
 
         val keys = java.util.Arrays.asList(key, "SecondKey".getBytes, "missKey".getBytes)
         val values = rocksDB.multiGetAsList(keys)
-        var i = 0
 
-        while (i < keys.size) {
-          println("multiGet " + new String(keys.get(i)) + ":"
-            + (if (values.get(i) != null) new String(values.get(i)) else null))
-          i += 1
+        for (i <- 0 to keys.size() - 1) {
+          // s插值操作
+          println(s"multiGet ${new String(keys.get(i))}: ${if (values.get(i) != null) new String(values.get(i)) else null}")
         }
+
         // 打印全部[key - value]
         var iter = rocksDB.newIterator
         iter.seekToFirst()
         while (iter.isValid) {
-          println("iterator key:" + new String(iter.key) + ", iter value:" + new String(iter.value))
+          println(s"iterator key: ${new String(iter.key)}, iter value: ${new String(iter.value)}")
           iter.next()
         }
         // 删除一个key
         rocksDB.delete(key)
-        println("after remove key:" + new String(key))
+        println(s"after remove key:${new String(key)}")
         iter = rocksDB.newIterator
         iter.seekToFirst()
         while (iter.isValid) {
-          System.out.println("iterator key:" + new String(iter.key) + ", iter value:" + new String(iter.value))
+          println(s"iterator key: ${new String(iter.key)}, iter value:${new String(iter.value)}")
           iter.next()
         }
       }
