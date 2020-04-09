@@ -3,9 +3,17 @@ package redis
 import io.tmos.arm.ArmMethods._
 import org.junit.Test
 import org.rocksdb.{Options, RocksDB}
+import redis.JedisClient.jedis
 
 class DataTest {
 
+  @Test
+  def redis(): Unit = {
+    val r = jedis(jedis => {
+      jedis.zrevrange("log", 0, -1)
+    })
+    println(r)
+  }
 
   @Test
   def rocksdb(): Unit = {
