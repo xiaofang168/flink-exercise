@@ -101,6 +101,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.jsuereth</groupId>
+            <artifactId>scala-arm_${scala.binary.version}</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.tmos</groupId>
             <artifactId>arm4s_${scala.binary.version}</artifactId>
             <version>1.1.0</version>
