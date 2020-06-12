@@ -3,6 +3,7 @@ package wordcount
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.api.scala.{ExecutionEnvironment, _}
 
+
 object WordCountDemo {
 
   def main(args: Array[String]): Unit = {
